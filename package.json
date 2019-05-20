@@ -1,0 +1,40 @@
+{
+    "name": "vizzini2",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jmthompson2015/vizzini2.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/jmthompson2015/vizzini2/issues"
+    },
+    "homepage": "https://github.com/jmthompson2015/vizzini2#readme",
+    "dependencies": {
+        "prop-types": "^15.7.2",
+        "ramda": "^0.26.1",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-dom-factories": "^1.0.2",
+        "react-redux": "^7.0.3",
+        "redux": "^4.0.1",
+        "seamless-immutable": "^7.1.4",
+        "tachyons": "^4.11.1"
+    },
+    "devDependencies": {
+        "eslint": "^5.16.0",
+        "eslint-config-airbnb": "^17.1.0",
+        "eslint-config-prettier": "^4.2.0",
+        "eslint-plugin-import": "^2.17.2",
+        "eslint-plugin-jsx-a11y": "^6.2.1",
+        "eslint-plugin-react": "^7.13.0",
+        "qunit": "^2.9.2"
+    }
+}
