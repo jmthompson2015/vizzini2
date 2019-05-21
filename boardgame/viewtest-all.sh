@@ -2,7 +2,13 @@
 
 export BASE=/Volumes/StorageDrive/jmthompson/git/vizzini2/boardgame
 
-cd chess
+cd checkers
+./viewtest-suite.sh
+
+cd ../chess
+./viewtest-suite.sh
+
+cd ../reversi
 ./viewtest-suite.sh
 
 cd ../tictactoe

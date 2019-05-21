@@ -34,5 +34,5 @@ QUnit.test("findCharByFenChar", assert => {
   assert.equal(Token.findCharByFenChar("p"), "\u265F");
 });
 
-const CoordinateCalculatorTest = {};
-export default CoordinateCalculatorTest;
+const TokenTest = {};
+export default TokenTest;
