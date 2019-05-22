@@ -10,42 +10,42 @@ const Token = {
     king: {
       blackChar: "\u265A",
       blackFen: "k",
-      whiteChar: "\u2654",
+      whiteChar: "\u265A",
       whiteFen: "K",
       key: "king"
     },
     queen: {
       blackChar: "\u265B",
       blackFen: "q",
-      whiteChar: "\u2655",
+      whiteChar: "\u265B",
       whiteFen: "Q",
       key: "queen"
     },
     rook: {
       blackChar: "\u265C",
       blackFen: "r",
-      whiteChar: "\u2656",
+      whiteChar: "\u265C",
       whiteFen: "R",
       key: "rook"
     },
     bishop: {
       blackChar: "\u265D",
       blackFen: "b",
-      whiteChar: "\u2657",
+      whiteChar: "\u265D",
       whiteFen: "B",
       key: "bishop"
     },
     knight: {
       blackChar: "\u265E",
       blackFen: "n",
-      whiteChar: "\u2658",
+      whiteChar: "\u265E",
       whiteFen: "N",
       key: "knight"
     },
     pawn: {
       blackChar: "\u265F",
       blackFen: "p",
-      whiteChar: "\u2659",
+      whiteChar: "\u265F",
       whiteFen: "P",
       key: "pawn"
     }

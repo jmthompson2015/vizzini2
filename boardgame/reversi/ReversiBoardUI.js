@@ -3,24 +3,15 @@ import GridBoardUI from "../GridBoardUI.js";
 
 import Token from "./Token.js";
 
-const cellClassFunction = (calculator, an, token) => {
-  let answer = "ba b--black bw1 pa1 v-mid";
+const NBSP = "\u00A0";
+const NBSP4 = `${NBSP}${NBSP}${NBSP}${NBSP}`;
 
-  if (token) {
-    answer += " f2";
-  }
-
-  if (token === "P") {
-    answer += " white";
-  }
-
-  return answer;
-};
+const cellClassFunction = (/* calculator, an, token */) => "ba b--black bw1 f2 pa1 tc v-mid";
 
 const cellFunction = (calculator, an, token) => {
   const ch = Token.findCharByFenChar(token);
 
-  return ch || token || an;
+  return ch || token || NBSP4;
 };
 
 class ReversiBoardUI extends React.PureComponent {

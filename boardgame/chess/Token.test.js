@@ -19,12 +19,12 @@ QUnit.test("findByFenChar", assert => {
 });
 
 QUnit.test("findCharByFenChar", assert => {
-  assert.equal(Token.findCharByFenChar("K"), "\u2654");
-  assert.equal(Token.findCharByFenChar("Q"), "\u2655");
-  assert.equal(Token.findCharByFenChar("R"), "\u2656");
-  assert.equal(Token.findCharByFenChar("B"), "\u2657");
-  assert.equal(Token.findCharByFenChar("N"), "\u2658");
-  assert.equal(Token.findCharByFenChar("P"), "\u2659");
+  assert.equal(Token.findCharByFenChar("K"), "\u265A");
+  assert.equal(Token.findCharByFenChar("Q"), "\u265B");
+  assert.equal(Token.findCharByFenChar("R"), "\u265C");
+  assert.equal(Token.findCharByFenChar("B"), "\u265D");
+  assert.equal(Token.findCharByFenChar("N"), "\u265E");
+  assert.equal(Token.findCharByFenChar("P"), "\u265F");
 
   assert.equal(Token.findCharByFenChar("k"), "\u265A");
   assert.equal(Token.findCharByFenChar("q"), "\u265B");

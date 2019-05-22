@@ -3,9 +3,9 @@ const Token = {
 
   properties: {
     pawn: {
-      blackChar: "\u2B24",
+      blackChar: "\u26AB",
       blackFen: "P",
-      whiteChar: "\u2B24",
+      whiteChar: "\u26AA",
       whiteFen: "p",
       key: "pawn"
     }
