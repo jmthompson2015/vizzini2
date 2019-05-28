@@ -14,5 +14,8 @@ cd ../reversi
 cd ../tictactoe
 ./viewtest-suite.sh
 
+cd ../warchest
+./viewtest-suite.sh
+
 cd ..
 ./viewtest-suite.sh
