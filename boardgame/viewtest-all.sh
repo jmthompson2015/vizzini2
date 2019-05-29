@@ -11,6 +11,9 @@ cd ../chess
 cd ../reversi
 ./viewtest-suite.sh
 
+cd ../terranova
+./viewtest-suite.sh
+
 cd ../tictactoe
 ./viewtest-suite.sh
 
