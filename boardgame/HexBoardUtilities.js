@@ -44,6 +44,9 @@ const cubeDirections = [
 const cubeAdd = (a, b) =>
   HexBoardUtilities.createCube({ x: a.x + b.x, y: a.y + b.y, z: a.z + b.z });
 
+// Linear interpolation for floats.
+const interpolate = (a, b, t) => a + (b - a) * t;
+
 // Linear interpolation for hexes.
 const cubeInterpolate = (a, b, t) =>
   HexBoardUtilities.createCube({
@@ -57,13 +60,13 @@ const cubeRound = cube => {
   let ry = Math.round(cube.y);
   let rz = Math.round(cube.z);
 
-  const x_diff = Math.abs(rx - cube.x);
-  const y_diff = Math.abs(ry - cube.y);
-  const z_diff = Math.abs(rz - cube.z);
+  const xDiff = Math.abs(rx - cube.x);
+  const yDiff = Math.abs(ry - cube.y);
+  const zDiff = Math.abs(rz - cube.z);
 
-  if (x_diff > y_diff && x_diff > z_diff) {
+  if (xDiff > yDiff && xDiff > zDiff) {
     rx = -ry - rz;
-  } else if (y_diff > z_diff) {
+  } else if (yDiff > zDiff) {
     ry = -rx - rz;
   } else {
     rz = -rx - ry;
@@ -72,10 +75,8 @@ const cubeRound = cube => {
   return HexBoardUtilities.createCube({ x: rx, y: ry, z: rz });
 };
 
-const hexRound = hex => HexBoardUtilities.cubeToAxial(cubeRound(axialToCube(hex)));
-
-// Linear interpolation for floats.
-const interpolate = (a, b, t) => a + (b - a) * t;
+const hexRound = hex =>
+  HexBoardUtilities.cubeToAxial(cubeRound(HexBoardUtilities.axialToCube(hex)));
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 HexBoardUtilities.axialToCube = hex => {
@@ -112,11 +113,11 @@ HexBoardUtilities.cubeToAxial = cube => {
 };
 
 HexBoardUtilities.flatHexCorner = (center, size, i) => {
-  const angle_deg = 60 * i;
-  const angle_rad = DEG_TO_RAD * angle_deg;
+  const angleDeg = 60 * i;
+  const angleRad = DEG_TO_RAD * angleDeg;
   return HexBoardUtilities.createPoint({
-    x: center.x + size * Math.cos(angle_rad),
-    y: center.y + size * Math.sin(angle_rad)
+    x: center.x + size * Math.cos(angleRad),
+    y: center.y + size * Math.sin(angleRad)
   });
 };
 
@@ -167,11 +168,11 @@ HexBoardUtilities.pixelToFlatHex = (point, size) => {
 };
 
 HexBoardUtilities.pointyHexCorner = (center, size, i) => {
-  const angle_deg = 60 * i - 30;
-  const angle_rad = DEG_TO_RAD * angle_deg;
+  const angleDeg = 60 * i - 30;
+  const angleRad = DEG_TO_RAD * angleDeg;
   return HexBoardUtilities.createPoint({
-    x: center.x + size * Math.cos(angle_rad),
-    y: center.y + size * Math.sin(angle_rad)
+    x: center.x + size * Math.cos(angleRad),
+    y: center.y + size * Math.sin(angleRad)
   });
 };
 
@@ -187,6 +188,79 @@ HexBoardUtilities.pointyHexToPixel = (hex, size, offset = { x: 0, y: 0 }) => {
   const x = size * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r);
   const y = size * ((3 / 2) * hex.r);
   return HexBoardUtilities.createPoint({ x: x + offset.x, y: y + offset.y });
+};
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
+HexBoardUtilities.boundingBox = points => {
+  const xx = R.map(R.prop("x"), points);
+  const yy = R.map(R.prop("y"), points);
+  const minX = Math.min(...xx);
+  const minY = Math.min(...yy);
+  const maxX = Math.max(...xx);
+  const maxY = Math.max(...yy);
+
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY
+  };
+};
+
+HexBoardUtilities.computeCorners = (center, size, isFlat) => {
+  const answer = [];
+
+  for (let i = 0; i < 6; i += 1) {
+    const corner = isFlat
+      ? HexBoardUtilities.flatHexCorner(center, size, i)
+      : HexBoardUtilities.pointyHexCorner(center, size, i);
+    answer.push(corner);
+  }
+
+  return answer;
+};
+
+HexBoardUtilities.enterPath = (context, points) => {
+  context.beginPath();
+  context.moveTo(points[0].x, points[0].y);
+
+  for (let i = 1; i < points.length; i += 1) {
+    context.lineTo(points[i].x, points[i].y);
+  }
+  context.closePath();
+};
+
+HexBoardUtilities.drawCircularImage = (context, corners, img) => {
+  const box = HexBoardUtilities.boundingBox(corners);
+  const diameter = Math.min(box.width, box.height);
+  const offsetX = (box.width - diameter) / 2.0;
+  const offsetY = (box.height - diameter) / 2.0;
+  context.drawImage(img, box.x + offsetX, box.y + offsetY, diameter, diameter);
+};
+
+HexBoardUtilities.drawHex = (context0, corners, gridColor, gridLineWidth) => {
+  const context = context0;
+  context.save();
+  context.lineJoin = "miter";
+  context.lineWidth = gridLineWidth;
+  context.strokeStyle = gridColor;
+  HexBoardUtilities.enterPath(context, corners);
+  context.stroke();
+  context.restore();
+};
+
+HexBoardUtilities.drawRectangularImage = (context, corners, img) => {
+  const box = HexBoardUtilities.boundingBox(corners);
+  context.drawImage(img, box.x, box.y, box.width, box.height);
+};
+
+HexBoardUtilities.fillHex = (context0, corners, background) => {
+  const context = context0;
+  context.save();
+  HexBoardUtilities.enterPath(context, corners);
+  context.fillStyle = background;
+  context.fill();
+  context.restore();
 };
 
 export default HexBoardUtilities;

@@ -7,45 +7,6 @@ const DEG_TO_RAD = Math.PI / 180.0;
 const COS30 = Math.cos(30.0 * DEG_TO_RAD);
 const COS60 = Math.cos(60.0 * DEG_TO_RAD);
 
-const boundingBox = corners => {
-  const xx = R.map(c => c.x, corners);
-  const yy = R.map(c => c.y, corners);
-  const minX = Math.min(...xx);
-  const minY = Math.min(...yy);
-  const maxX = Math.max(...xx);
-  const maxY = Math.max(...yy);
-
-  return {
-    x: minX,
-    y: minY,
-    width: maxX - minX,
-    height: maxY - minY
-  };
-};
-
-const computeCorners = (center, size, isFlat) => {
-  const answer = [];
-
-  for (let i = 0; i < 6; i += 1) {
-    const corner = isFlat
-      ? HBUtils.flatHexCorner(center, size, i)
-      : HBUtils.pointyHexCorner(center, size, i);
-    answer.push(corner);
-  }
-
-  return answer;
-};
-
-const enterPath = (context, corners) => {
-  context.beginPath();
-  context.moveTo(corners[0].x, corners[0].y);
-
-  for (let i = 1; i < 6; i += 1) {
-    context.lineTo(corners[i].x, corners[i].y);
-  }
-  context.closePath();
-};
-
 const loadImage = src =>
   new Promise((resolve, reject) => {
     const img = new Image();
@@ -56,31 +17,6 @@ const loadImage = src =>
     img.addEventListener("error", err => reject(err));
     img.src = src;
   });
-
-const drawHex = (context0, corners, gridColor, gridLineWidth) => {
-  const context = context0;
-  context.save();
-  context.lineJoin = "miter";
-  context.lineWidth = gridLineWidth;
-  context.strokeStyle = gridColor;
-  enterPath(context, corners);
-  context.stroke();
-  context.restore();
-};
-
-const drawImage = (context, corners, img) => {
-  const box = boundingBox(corners);
-  context.drawImage(img, box.x, box.y, box.width, box.height);
-};
-
-const fillHex = (context0, corners, background) => {
-  const context = context0;
-  context.save();
-  enterPath(context, corners);
-  context.fillStyle = background;
-  context.fill();
-  context.restore();
-};
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 class HexBoardUI extends React.PureComponent {
@@ -161,13 +97,13 @@ class HexBoardUI extends React.PureComponent {
 
         if (isHexUsed(an)) {
           const center = this.computeCenter(f - 1, r - 1);
-          const corners = computeCorners(center, size, isFlat);
+          const corners = HBUtils.computeCorners(center, size, isFlat);
 
           // Layer 0: Cell background color
           const background = hexBackgroundColor(an);
 
           if (background) {
-            fillHex(context, corners, background);
+            HBUtils.fillHex(context, corners, background);
           }
 
           // Layer 1: Cell background image
@@ -177,12 +113,12 @@ class HexBoardUI extends React.PureComponent {
             const img = imageMap[image];
 
             if (img) {
-              drawImage(context, corners, img);
+              HBUtils.drawRectangularImage(context, corners, img);
             }
           }
 
           // Layer 2: Cell outline
-          drawHex(context, corners, gridColor, gridLineWidth);
+          HBUtils.drawHex(context, corners, gridColor, gridLineWidth);
         }
       }
     }
@@ -190,7 +126,7 @@ class HexBoardUI extends React.PureComponent {
 
   drawTokens(context) {
     const { calculator, drawTokenFunction, isHexUsed, tokens } = this.props;
-
+    const { imageMap } = this.state;
     const size = this.computeSize();
     context.save();
 
@@ -201,7 +137,7 @@ class HexBoardUI extends React.PureComponent {
         if (isHexUsed(an)) {
           const token = tokens[an];
           const center = this.computeCenter(f - 1, r - 1);
-          drawTokenFunction(context, center, size, an, token);
+          drawTokenFunction(context, center, size, an, token, imageMap);
         }
       }
     }
