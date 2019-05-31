@@ -2,9 +2,6 @@ import HBUtils from "./HexBoardUtilities.js";
 
 QUnit.module("HexBoardUtilities");
 
-const FILE_COUNT = 4;
-const RANK_COUNT = 3;
-
 const round4 = value => Math.round(value * 10000.0) / 10000.0;
 
 QUnit.test("axialToCube()", assert => {
@@ -194,7 +191,7 @@ QUnit.test("flatHexCorner() 1", assert => {
   // Verify.
   assert.ok(result);
   assert.equal(result.x, 10);
-  assert.equal(result.y, 14);
+  assert.equal(round4(result.y), 13.6603);
 });
 
 QUnit.test("flatHexCorner() 2", assert => {
@@ -207,8 +204,8 @@ QUnit.test("flatHexCorner() 2", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, 0);
-  assert.equal(result.y, 14);
+  assert.equal(round4(result.x), 0);
+  assert.equal(round4(result.y), 13.6603);
 });
 
 QUnit.test("flatHexCorner() 3", assert => {
@@ -222,7 +219,7 @@ QUnit.test("flatHexCorner() 3", assert => {
   // Verify.
   assert.ok(result);
   assert.equal(result.x, -5);
-  assert.equal(result.y, 5);
+  assert.equal(round4(result.y), 5);
 });
 
 QUnit.test("flatHexCorner() 4", assert => {
@@ -235,8 +232,8 @@ QUnit.test("flatHexCorner() 4", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, 0);
-  assert.equal(result.y, -4);
+  assert.equal(round4(result.x), 0);
+  assert.equal(round4(result.y), -3.6603);
 });
 
 QUnit.test("flatHexCorner() 5", assert => {
@@ -250,7 +247,7 @@ QUnit.test("flatHexCorner() 5", assert => {
   // Verify.
   assert.ok(result);
   assert.equal(result.x, 10);
-  assert.equal(result.y, -4);
+  assert.equal(round4(result.y), -3.6603);
 });
 
 QUnit.test("flatHexDimensions()", assert => {
@@ -292,7 +289,7 @@ QUnit.test("flatHexToPixel()", assert => {
   // Verify.
   assert.ok(result);
   assert.equal(result.x, 15);
-  assert.equal(result.y, 43);
+  assert.equal(round4(result.y), 43.3013);
 });
 
 QUnit.test("hexDiagonalNeighbor() 0", assert => {
@@ -337,8 +334,8 @@ QUnit.test("pointyHexCorner() 0", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, 14);
-  assert.equal(result.y, 0);
+  assert.equal(round4(result.x), 13.6603);
+  assert.equal(round4(result.y), 0);
 });
 
 QUnit.test("pointyHexCorner() 1", assert => {
@@ -351,7 +348,7 @@ QUnit.test("pointyHexCorner() 1", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, 14);
+  assert.equal(round4(result.x), 13.6603);
   assert.equal(result.y, 10);
 });
 
@@ -365,7 +362,7 @@ QUnit.test("pointyHexCorner() 2", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, 5);
+  assert.equal(round4(result.x), 5);
   assert.equal(result.y, 15);
 });
 
@@ -379,7 +376,7 @@ QUnit.test("pointyHexCorner() 3", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, -4);
+  assert.equal(round4(result.x), -3.6603);
   assert.equal(result.y, 10);
 });
 
@@ -393,8 +390,8 @@ QUnit.test("pointyHexCorner() 4", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, -4);
-  assert.equal(result.y, 0);
+  assert.equal(round4(result.x), -3.6603);
+  assert.equal(round4(result.y), 0);
 });
 
 QUnit.test("pointyHexCorner() 5", assert => {
@@ -407,7 +404,7 @@ QUnit.test("pointyHexCorner() 5", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, 5);
+  assert.equal(round4(result.x), 5);
   assert.equal(result.y, -5);
 });
 
@@ -449,7 +446,7 @@ QUnit.test("pointyHexToPixel()", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.x, 35);
+  assert.equal(round4(result.x), 34.641);
   assert.equal(result.y, 30);
 });
 

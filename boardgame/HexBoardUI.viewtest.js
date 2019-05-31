@@ -1,8 +1,8 @@
 import CoordinateCalculator from "./CoordinateCalculator.js";
 import HexBoardUI from "./HexBoardUI.js";
-import HBUtils from "./HexBoardUtilities.js";
 
-const drawTokenFunction = (context, center, an, token) => {
+const drawTokenFunction = (context0, center, an, token) => {
+  const context = context0;
   context.save();
   context.textAlign = "center";
   context.textBaseline = "middle";

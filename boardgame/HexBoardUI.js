@@ -3,10 +3,6 @@
 // see https://www.redblobgames.com/grids/hexagons/
 import HBUtils from "./HexBoardUtilities.js";
 
-const DEG_TO_RAD = Math.PI / 180.0;
-const COS30 = Math.cos(30.0 * DEG_TO_RAD);
-const COS60 = Math.cos(60.0 * DEG_TO_RAD);
-
 const loadImage = src =>
   new Promise((resolve, reject) => {
     const img = new Image();
@@ -23,11 +19,12 @@ class HexBoardUI extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = { imageMap: {} };
+    this.state = { size: 1.0, offset: HBUtils.createPoint(), imageMap: {} };
   }
 
   componentDidMount() {
     this.loadImages();
+    this.computeSize();
     this.paint();
   }
 
@@ -35,47 +32,67 @@ class HexBoardUI extends React.PureComponent {
     this.paint();
   }
 
-  computeCenter(f, r) {
-    const { gridLineWidth, isFlat } = this.props;
+  computeCenter(size, offset, f, r) {
+    const { isFlat } = this.props;
 
-    const size = this.computeSize();
     const hex = HBUtils.createHex({ q: f, r });
     const dim = isFlat ? HBUtils.flatHexDimensions(size) : HBUtils.pointyHexDimensions(size);
-    const offset = HBUtils.createPoint({
-      x: (gridLineWidth + dim.w) / 2.0,
-      y: (gridLineWidth + dim.h) / 2.0
+    const myOffset = HBUtils.createPoint({
+      x: dim.w / 2.0 + offset.x,
+      y: dim.h / 2.0 + offset.y
     });
 
     return isFlat
-      ? HBUtils.flatHexToPixel(hex, size, offset)
-      : HBUtils.pointyHexToPixel(hex, size, offset);
+      ? HBUtils.flatHexToPixel(hex, size, myOffset)
+      : HBUtils.pointyHexToPixel(hex, size, myOffset);
   }
 
   computeSize() {
-    const { calculator, gridLineWidth, height, isFlat, width } = this.props;
+    const { calculator, gridLineWidth, height, isFlat, isHexUsed, width } = this.props;
 
-    const dim0 = HBUtils.flatHexDimensions(1.0);
-    const width0 = calculator.fileCount * dim0.h;
-    const height0 = calculator.rankCount * dim0.h;
+    const size0 = 1.0;
+    const offset0 = HBUtils.createPoint();
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
 
-    let width1;
-    let height1;
+    for (let r = 1; r <= calculator.rankCount; r += 1) {
+      for (let f = 1; f <= calculator.fileCount; f += 1) {
+        const an = calculator.fileRankToAN(f, r);
 
-    if (isFlat) {
-      width1 = COS30 * (calculator.rankCount - 1) * dim0.h;
-      height1 = COS60 * (calculator.fileCount - 1) * dim0.h;
-    } else {
-      width1 = COS60 * (calculator.rankCount - 1) * dim0.h;
-      height1 = COS30 * (calculator.fileCount - 1) * dim0.h;
+        if (isHexUsed(an)) {
+          const center = this.computeCenter(size0, offset0, f - 1, r - 1);
+
+          for (let i = 0; i < 6; i += 1) {
+            const corner = isFlat
+              ? HBUtils.flatHexCorner(center, size0, i)
+              : HBUtils.pointyHexCorner(center, size0, i);
+            minX = Math.min(corner.x, minX);
+            minY = Math.min(corner.y, minY);
+            maxX = Math.max(corner.x, maxX);
+            maxY = Math.max(corner.y, maxY);
+          }
+        }
+      }
     }
 
-    const width2 = gridLineWidth / (2.0 * calculator.fileCount);
-    const height2 = gridLineWidth / (2.0 * calculator.rankCount);
+    const width0 = maxX - minX;
+    const height0 = maxY - minY;
+    const sizeW = (width - gridLineWidth) / width0;
+    const sizeH = (height - gridLineWidth) / height0;
+    const size = Math.min(sizeW, sizeH);
 
-    const sizeW = width / (width0 + width1) - width2;
-    const sizeH = height / (height0 + height1) - height2;
+    const margin = {
+      w: (width - size * width0) / 2.0,
+      h: (height - size * height0) / 2.0
+    };
+    const offset = HBUtils.createPoint({
+      x: margin.w - size * minX,
+      y: margin.h - size * minY
+    });
 
-    return Math.max(sizeW, sizeH);
+    this.setState({ size, offset });
   }
 
   drawCells(context) {
@@ -88,15 +105,14 @@ class HexBoardUI extends React.PureComponent {
       isFlat,
       isHexUsed
     } = this.props;
-    const { imageMap } = this.state;
-    const size = this.computeSize();
+    const { imageMap, offset, size } = this.state;
 
     for (let r = 1; r <= calculator.rankCount; r += 1) {
       for (let f = 1; f <= calculator.fileCount; f += 1) {
         const an = calculator.fileRankToAN(f, r);
 
         if (isHexUsed(an)) {
-          const center = this.computeCenter(f - 1, r - 1);
+          const center = this.computeCenter(size, offset, f - 1, r - 1);
           const corners = HBUtils.computeCorners(center, size, isFlat);
 
           // Layer 0: Cell background color
@@ -126,8 +142,7 @@ class HexBoardUI extends React.PureComponent {
 
   drawTokens(context) {
     const { calculator, drawTokenFunction, isHexUsed, tokens } = this.props;
-    const { imageMap } = this.state;
-    const size = this.computeSize();
+    const { imageMap, offset, size } = this.state;
     context.save();
 
     for (let r = 1; r <= calculator.rankCount; r += 1) {
@@ -136,7 +151,7 @@ class HexBoardUI extends React.PureComponent {
 
         if (isHexUsed(an)) {
           const token = tokens[an];
-          const center = this.computeCenter(f - 1, r - 1);
+          const center = this.computeCenter(size, offset, f - 1, r - 1);
           drawTokenFunction(context, center, size, an, token, imageMap);
         }
       }

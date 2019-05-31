@@ -11,8 +11,7 @@ HexBoardUtilities.createDimension = ({ w = 0, h = 0 } = {}) => Immutable({ w, h 
 
 HexBoardUtilities.createHex = ({ q = 0, r = 0 } = {}) => Immutable({ q, r });
 
-HexBoardUtilities.createPoint = ({ x = 0, y = 0 } = {}) =>
-  Immutable({ x: Math.round(x), y: Math.round(y) });
+HexBoardUtilities.createPoint = ({ x = 0, y = 0 } = {}) => Immutable({ x, y });
 
 const axialDirections = [
   HexBoardUtilities.createHex({ q: +1, r: 0 }),
