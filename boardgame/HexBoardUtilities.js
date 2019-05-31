@@ -231,7 +231,7 @@ HexBoardUtilities.enterPath = (context, points) => {
 
 HexBoardUtilities.drawCircularImage = (context, corners, img) => {
   const box = HexBoardUtilities.boundingBox(corners);
-  const diameter = Math.min(box.width, box.height);
+  const diameter = 0.9 * Math.min(box.width, box.height);
   const offsetX = (box.width - diameter) / 2.0;
   const offsetY = (box.height - diameter) / 2.0;
   context.drawImage(img, box.x + offsetX, box.y + offsetY, diameter, diameter);

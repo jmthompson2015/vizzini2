@@ -5,6 +5,8 @@ const RAVEN = Token.properties[Token.RAVEN];
 const WOLF = Token.properties[Token.WOLF];
 const ARCHER = Token.properties[Token.ARCHER];
 const CAVALRY = Token.properties[Token.CAVALRY];
+const CROSSBOWMAN = Token.properties[Token.CROSSBOWMAN];
+const LANCER = Token.properties[Token.LANCER];
 const PIKEMAN = Token.properties[Token.PIKEMAN];
 const SWORDSMAN = Token.properties[Token.SWORDSMAN];
 
@@ -12,8 +14,10 @@ const anToTokens1 = {
   d7: WOLF,
   e2: RAVEN,
   e3: SWORDSMAN,
+  e5: [WOLF, LANCER, LANCER],
   e6: CAVALRY,
   f4: ARCHER,
+  g3: [RAVEN, CROSSBOWMAN, CROSSBOWMAN],
   g6: WOLF,
   h1: RAVEN,
   h2: PIKEMAN

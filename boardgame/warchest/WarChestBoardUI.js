@@ -42,37 +42,44 @@ const UNUSED_4P = [
 ];
 const HEX_4P = ["a6", "a7", "b5", "b6", "b7", "j1", "j2", "j3", "k1", "k2"];
 const UNUSED_2P = HEX_4P.concat(UNUSED_4P);
-const CONTROL_POINTS_2P = [
-  // "a7",
-  // "b5",
-  "c6",
-  "d4",
-  "d7",
-  "e2",
-  "e5",
-  "g3",
-  "g6",
-  "h1",
-  "h4",
-  "i2"
-  // "j3",
-  // "k1"
-];
+const CONTROL_POINTS_2P = ["c6", "d4", "d7", "e2", "e5", "g3", "g6", "h1", "h4", "i2"];
 const CONTROL_POINTS_4P = ["a7", "b5", "j3", "k1"].concat(CONTROL_POINTS_2P);
 
-const drawTokenFunction = (context0, center, size, an, token, imageMap) => {
+const drawCoin = (context, center, size, an, token, imageMap) => {
+  const corners = HBUtils.computeCorners(center, size, IS_FLAT);
+  const img = imageMap[token.image];
+
+  if (img) {
+    HBUtils.drawCircularImage(context, corners, img);
+  }
+};
+
+const drawControl = (context, center, size, an, token, imageMap) => {
+  const corners = HBUtils.computeCorners(center, size, IS_FLAT);
+  const img = imageMap[token.image];
+
+  if (img) {
+    HBUtils.drawRectangularImage(context, corners, img);
+  }
+};
+
+const drawTokenFunction = (context0, center, size, an, tokens, imageMap) => {
   const context = context0;
 
-  if (token) {
-    const corners = HBUtils.computeCorners(center, size, IS_FLAT);
-    const img = imageMap[token.image];
-
-    if (img) {
-      if (token.image.indexOf("Control") >= 0) {
-        HBUtils.drawRectangularImage(context, corners, img);
-      } else {
-        HBUtils.drawCircularImage(context, corners, img);
+  if (tokens) {
+    if (Array.isArray(tokens)) {
+      for (let i = 0; i < tokens.length; i += 1) {
+        const token = tokens[i];
+        if (token.image.indexOf("Control") >= 0) {
+          drawControl(context, center, size, an, token, imageMap);
+        } else {
+          drawCoin(context, center, size, an, token, imageMap);
+        }
       }
+    } else if (tokens.image.indexOf("Control") >= 0) {
+      drawControl(context, center, size, an, tokens, imageMap);
+    } else {
+      drawCoin(context, center, size, an, tokens, imageMap);
     }
   } else {
     context.save();
@@ -80,7 +87,7 @@ const drawTokenFunction = (context0, center, size, an, token, imageMap) => {
     context.textBaseline = "middle";
     context.fillStyle = "Green";
     context.font = "24px serif";
-    context.fillText(token || an, center.x, center.y);
+    context.fillText(an, center.x, center.y);
     context.restore();
   }
 };
