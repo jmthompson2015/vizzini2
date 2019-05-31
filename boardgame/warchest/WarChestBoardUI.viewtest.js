@@ -8,7 +8,25 @@ const CAVALRY = Token.properties[Token.CAVALRY];
 const PIKEMAN = Token.properties[Token.PIKEMAN];
 const SWORDSMAN = Token.properties[Token.SWORDSMAN];
 
-const anToTokens = {
+const anToTokens1 = {
+  d7: WOLF,
+  e2: RAVEN,
+  e3: SWORDSMAN,
+  e6: CAVALRY,
+  f4: ARCHER,
+  g6: WOLF,
+  h1: RAVEN,
+  h2: PIKEMAN
+};
+
+const element1 = React.createElement(WarChestBoardUI, {
+  anToTokens: anToTokens1,
+  myKey: "hexPanel1"
+});
+ReactDOM.render(element1, document.getElementById("board1"));
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
+const anToTokens2 = {
   b5: RAVEN,
   d7: WOLF,
   e2: RAVEN,
@@ -21,5 +39,9 @@ const anToTokens = {
   j3: WOLF
 };
 
-const element = React.createElement(WarChestBoardUI, { anToTokens });
-ReactDOM.render(element, document.getElementById("board"));
+const element2 = React.createElement(WarChestBoardUI, {
+  anToTokens: anToTokens2,
+  myKey: "hexPanel2",
+  isTwoPlayer: false
+});
+ReactDOM.render(element2, document.getElementById("board2"));

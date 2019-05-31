@@ -8,7 +8,7 @@ const images0 = R.map(R.prop("image"), Token.values());
 const images = ["resource/EmptyControlPoint.png"].concat(images0);
 
 const IS_FLAT = true;
-const UNUSED = [
+const UNUSED_4P = [
   "a1",
   "a2",
   "a3",
@@ -41,9 +41,10 @@ const UNUSED = [
   "k7"
 ];
 const HEX_4P = ["a6", "a7", "b5", "b6", "b7", "j1", "j2", "j3", "k1", "k2"];
-const CONTROL_POINTS = [
-  "a7",
-  "b5",
+const UNUSED_2P = HEX_4P.concat(UNUSED_4P);
+const CONTROL_POINTS_2P = [
+  // "a7",
+  // "b5",
   "c6",
   "d4",
   "d7",
@@ -53,10 +54,11 @@ const CONTROL_POINTS = [
   "g6",
   "h1",
   "h4",
-  "i2",
-  "j3",
-  "k1"
+  "i2"
+  // "j3",
+  // "k1"
 ];
+const CONTROL_POINTS_4P = ["a7", "b5", "j3", "k1"].concat(CONTROL_POINTS_2P);
 
 const drawTokenFunction = (context0, center, size, an, token, imageMap) => {
   const context = context0;
@@ -83,31 +85,23 @@ const drawTokenFunction = (context0, center, size, an, token, imageMap) => {
   }
 };
 
-const cellColorFunction = an => {
-  let answer = "hsl(40,30%,60%)";
+const cellColorFunction = an => (HEX_4P.includes(an) ? "hsl(40,30%,45%)" : "hsl(40,30%,60%)");
 
-  if (HEX_4P.includes(an)) {
-    answer = "hsl(40,30%,45%)";
-  }
+const cellImageFunction = isTwoPlayer => an => {
+  const controlPoints = isTwoPlayer ? CONTROL_POINTS_2P : CONTROL_POINTS_4P;
 
-  return answer;
+  return controlPoints.includes(an) ? "resource/EmptyControlPoint.png" : undefined;
 };
 
-const cellImageFunction = an => {
-  let answer;
+const isCellUsedFunction = isTwoPlayer => an => {
+  const unused = isTwoPlayer ? UNUSED_2P : UNUSED_4P;
 
-  if (CONTROL_POINTS.includes(an)) {
-    answer = "resource/EmptyControlPoint.png";
-  }
-
-  return answer;
+  return !unused.includes(an);
 };
-
-const isCellUsedFunction = an => !UNUSED.includes(an);
 
 class WarChestBoardUI extends React.PureComponent {
   render() {
-    const { anToTokens } = this.props;
+    const { anToTokens, isTwoPlayer, myKey } = this.props;
 
     const calculator = new CoordinateCalculator(11, 7);
 
@@ -118,17 +112,26 @@ class WarChestBoardUI extends React.PureComponent {
 
       backgroundColor: "hsl(40,30%,75%)",
       cellColorFunction,
-      cellImageFunction,
+      cellImageFunction: cellImageFunction(isTwoPlayer),
       gridColor: "hsl(40,30%,75%)",
       gridLineWidth: 3,
       images,
-      isCellUsedFunction
+      isCellUsedFunction: isCellUsedFunction(isTwoPlayer),
+      myKey
     });
   }
 }
 
 WarChestBoardUI.propTypes = {
-  anToTokens: PropTypes.arrayOf(PropTypes.string).isRequired
+  anToTokens: PropTypes.arrayOf(PropTypes.string).isRequired,
+
+  isTwoPlayer: PropTypes.bool,
+  myKey: PropTypes.string
+};
+
+WarChestBoardUI.defaultProps = {
+  isTwoPlayer: true,
+  myKey: "hexBoardCanvas"
 };
 
 export default WarChestBoardUI;
