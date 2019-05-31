@@ -11,7 +11,7 @@ const drawTokenFunction = (context0, center, an, token) => {
   context.restore();
 };
 
-const tokens1 = {
+const anToTokens1 = {
   a1: "X",
   d1: "Y",
   b2: "Z",
@@ -23,7 +23,7 @@ const calculator1 = new CoordinateCalculator(3, 4);
 const element1 = React.createElement(HexBoardUI, {
   calculator: calculator1,
   drawTokenFunction,
-  tokens: tokens1,
+  anToTokens: anToTokens1,
 
   myKey: "hexPanel1",
   height: 4 * size,
@@ -32,7 +32,7 @@ const element1 = React.createElement(HexBoardUI, {
 ReactDOM.render(element1, document.getElementById("panel1"));
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
-const tokens2 = {
+const anToTokens2 = {
   a1: "X",
   d1: "Y",
   b2: "Z",
@@ -43,7 +43,7 @@ const calculator2 = new CoordinateCalculator(4, 3);
 const element2 = React.createElement(HexBoardUI, {
   calculator: calculator2,
   drawTokenFunction,
-  tokens: tokens2,
+  anToTokens: anToTokens2,
 
   backgroundColor: "OliveDrab",
   gridColor: "Maroon",

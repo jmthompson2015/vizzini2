@@ -48,7 +48,7 @@ class HexBoardUI extends React.PureComponent {
   }
 
   computeSize() {
-    const { calculator, gridLineWidth, height, isFlat, isHexUsed, width } = this.props;
+    const { calculator, gridLineWidth, height, isFlat, isCellUsedFunction, width } = this.props;
 
     const size0 = 1.0;
     const offset0 = HBUtils.createPoint();
@@ -61,7 +61,7 @@ class HexBoardUI extends React.PureComponent {
       for (let f = 1; f <= calculator.fileCount; f += 1) {
         const an = calculator.fileRankToAN(f, r);
 
-        if (isHexUsed(an)) {
+        if (isCellUsedFunction(an)) {
           const center = this.computeCenter(size0, offset0, f - 1, r - 1);
 
           for (let i = 0; i < 6; i += 1) {
@@ -100,10 +100,10 @@ class HexBoardUI extends React.PureComponent {
       calculator,
       gridColor,
       gridLineWidth,
-      hexBackgroundColor,
-      hexBackgroundImage,
+      cellColorFunction,
+      cellImageFunction,
       isFlat,
-      isHexUsed
+      isCellUsedFunction
     } = this.props;
     const { imageMap, offset, size } = this.state;
 
@@ -111,19 +111,19 @@ class HexBoardUI extends React.PureComponent {
       for (let f = 1; f <= calculator.fileCount; f += 1) {
         const an = calculator.fileRankToAN(f, r);
 
-        if (isHexUsed(an)) {
+        if (isCellUsedFunction(an)) {
           const center = this.computeCenter(size, offset, f - 1, r - 1);
           const corners = HBUtils.computeCorners(center, size, isFlat);
 
           // Layer 0: Cell background color
-          const background = hexBackgroundColor(an);
+          const background = cellColorFunction(an);
 
           if (background) {
             HBUtils.fillHex(context, corners, background);
           }
 
           // Layer 1: Cell background image
-          const image = hexBackgroundImage(an);
+          const image = cellImageFunction(an);
 
           if (image) {
             const img = imageMap[image];
@@ -141,7 +141,7 @@ class HexBoardUI extends React.PureComponent {
   }
 
   drawTokens(context) {
-    const { calculator, drawTokenFunction, isHexUsed, tokens } = this.props;
+    const { calculator, drawTokenFunction, isCellUsedFunction, anToTokens } = this.props;
     const { imageMap, offset, size } = this.state;
     context.save();
 
@@ -149,8 +149,8 @@ class HexBoardUI extends React.PureComponent {
       for (let f = 1; f <= calculator.fileCount; f += 1) {
         const an = calculator.fileRankToAN(f, r);
 
-        if (isHexUsed(an)) {
-          const token = tokens[an];
+        if (isCellUsedFunction(an)) {
+          const token = anToTokens[an];
           const center = this.computeCenter(size, offset, f - 1, r - 1);
           drawTokenFunction(context, center, size, an, token, imageMap);
         }
@@ -201,35 +201,35 @@ class HexBoardUI extends React.PureComponent {
 }
 
 HexBoardUI.propTypes = {
+  anToTokens: PropTypes.shape().isRequired,
   calculator: PropTypes.shape().isRequired,
   drawTokenFunction: PropTypes.func.isRequired,
-  tokens: PropTypes.shape().isRequired,
 
   backgroundColor: PropTypes.string,
+  cellColorFunction: PropTypes.func,
+  cellImageFunction: PropTypes.func,
   gridColor: PropTypes.string,
   gridLineWidth: PropTypes.number,
   height: PropTypes.number,
-  hexBackgroundColor: PropTypes.func,
-  hexBackgroundImage: PropTypes.func,
   images: PropTypes.arrayOf(),
+  isCellUsedFunction: PropTypes.func,
   isFlat: PropTypes.bool,
-  isHexUsed: PropTypes.func,
   myKey: PropTypes.string,
   width: PropTypes.number
 };
 
 HexBoardUI.defaultProps = {
   backgroundColor: "Gainsboro",
+  cellColorFunction: () => undefined,
+  cellImageFunction: () => undefined,
   gridColor: "Black",
   gridLineWidth: 1,
-  hexBackgroundColor: () => undefined,
-  hexBackgroundImage: () => undefined,
+  height: 480,
   images: [],
+  isCellUsedFunction: () => true,
   isFlat: true,
-  isHexUsed: () => true,
   myKey: "hexBoardCanvas",
-  width: 640,
-  height: 480
+  width: 640
 };
 
 export default HexBoardUI;

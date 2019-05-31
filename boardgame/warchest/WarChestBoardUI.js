@@ -83,7 +83,7 @@ const drawTokenFunction = (context0, center, size, an, token, imageMap) => {
   }
 };
 
-const hexBackgroundColor = an => {
+const cellColorFunction = an => {
   let answer = "hsl(40,30%,60%)";
 
   if (HEX_4P.includes(an)) {
@@ -93,7 +93,7 @@ const hexBackgroundColor = an => {
   return answer;
 };
 
-const hexBackgroundImage = an => {
+const cellImageFunction = an => {
   let answer;
 
   if (CONTROL_POINTS.includes(an)) {
@@ -103,31 +103,32 @@ const hexBackgroundImage = an => {
   return answer;
 };
 
-const isHexUsed = an => !UNUSED.includes(an);
+const isCellUsedFunction = an => !UNUSED.includes(an);
 
 class WarChestBoardUI extends React.PureComponent {
   render() {
-    const { tokens } = this.props;
+    const { anToTokens } = this.props;
 
     const calculator = new CoordinateCalculator(11, 7);
 
     return React.createElement(HexBoardUI, {
-      backgroundColor: "hsl(40,30%,75%)",
+      anToTokens,
       calculator,
       drawTokenFunction,
+
+      backgroundColor: "hsl(40,30%,75%)",
+      cellColorFunction,
+      cellImageFunction,
       gridColor: "hsl(40,30%,75%)",
       gridLineWidth: 3,
-      hexBackgroundColor,
-      hexBackgroundImage,
       images,
-      isHexUsed,
-      tokens
+      isCellUsedFunction
     });
   }
 }
 
 WarChestBoardUI.propTypes = {
-  tokens: PropTypes.arrayOf(PropTypes.string).isRequired
+  anToTokens: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 export default WarChestBoardUI;

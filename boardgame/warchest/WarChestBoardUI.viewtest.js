@@ -8,7 +8,7 @@ const CAVALRY = Token.properties[Token.CAVALRY];
 const PIKEMAN = Token.properties[Token.PIKEMAN];
 const SWORDSMAN = Token.properties[Token.SWORDSMAN];
 
-const tokens = {
+const anToTokens = {
   b5: RAVEN,
   d7: WOLF,
   e2: RAVEN,
@@ -21,5 +21,5 @@ const tokens = {
   j3: WOLF
 };
 
-const element = React.createElement(WarChestBoardUI, { tokens });
+const element = React.createElement(WarChestBoardUI, { anToTokens });
 ReactDOM.render(element, document.getElementById("board"));

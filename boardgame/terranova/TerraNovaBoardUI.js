@@ -199,7 +199,7 @@ const drawTokenFunction = (context0, center, size, an, token) => {
   context.restore();
 };
 
-const hexBackgroundColor = an => {
+const cellColorFunction = an => {
   let answer;
 
   if (DENSE_FOREST.includes(an)) {
@@ -223,27 +223,28 @@ const hexBackgroundColor = an => {
   return answer;
 };
 
-const isHexUsed = an => USED.includes(an);
+const isCellUsedFunction = an => USED.includes(an);
 
 class TerraNovaBoardUI extends React.PureComponent {
   render() {
-    const { tokens } = this.props;
+    const { anToTokens } = this.props;
 
     const calculator = new CoordinateCalculator(16, 17);
 
     return React.createElement(HexBoardUI, {
+      anToTokens,
       calculator,
       drawTokenFunction,
+
+      cellColorFunction,
       gridColor: "White",
-      hexBackgroundColor,
-      isHexUsed,
-      tokens
+      isCellUsedFunction
     });
   }
 }
 
 TerraNovaBoardUI.propTypes = {
-  tokens: PropTypes.arrayOf(PropTypes.string).isRequired
+  anToTokens: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 export default TerraNovaBoardUI;
