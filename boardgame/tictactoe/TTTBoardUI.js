@@ -1,46 +1,103 @@
-import CellUI from "./CellUI.js";
+import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
-import GridBoardUI from "../GridBoardUI.js";
 
 import Token from "./Token.js";
 
-const cellClassFunction = (calculator, an, token) => {
-  const file = calculator.anToFile(an);
-  const rank = calculator.anToRank(an);
-  let answer = "";
+const IS_SQUARE = true;
+const IS_FLAT = true;
 
-  if (file > 1 && rank < 3) {
-    answer = "bl bt bw2";
-  } else if (file > 1) {
-    answer = "bl bw2";
-  } else if (rank < 3) {
-    answer = "bt bw2";
-  }
+const calculator = new CoordinateCalculator(3, 3);
 
-  return answer;
+const drawO = (context0, center, size, color) => {
+  const radius = 0.25 * size;
+  const startAngle = 0;
+  const endAngle = 2.0 * Math.PI;
+
+  const context = context0;
+  context.save();
+  context.lineWidth = 10;
+  context.strokeStyle = color;
+
+  context.beginPath();
+  context.arc(center.x, center.y, radius, startAngle, endAngle);
+  context.stroke();
+  context.restore();
 };
 
-const cellFunction = (calculator, an, token) =>
-  React.createElement(CellUI, { an, backgroundColor: null, token });
+const drawX = (context0, center, size, color) => {
+  const x0 = center.x - 0.25 * size;
+  const y0 = center.y - 0.25 * size;
+  const x1 = center.x + 0.25 * size;
+  const y1 = center.y + 0.25 * size;
+
+  const context = context0;
+  context.save();
+  context.lineWidth = 10;
+  context.strokeStyle = color;
+
+  context.beginPath();
+  context.moveTo(x0, y0);
+  context.lineTo(x1, y1);
+  context.moveTo(x1, y0);
+  context.lineTo(x0, y1);
+  context.stroke();
+  context.restore();
+};
+
+const drawTokenFunction = (context0, center, size, an, token) => {
+  const context = context0;
+  context.save();
+
+  if (token) {
+    switch (token.key) {
+      case Token.X:
+        drawX(context, center, size, "Red");
+        break;
+      case Token.O:
+        drawO(context, center, size, "Blue");
+        break;
+      default:
+      // Nothing to do.
+    }
+  } else {
+    context.fillStyle = "Black";
+    context.font = "16px serif";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(an, center.x, center.y);
+  }
+
+  context.restore();
+};
 
 class TTTBoardUI extends React.PureComponent {
   render() {
-    const { tokens } = this.props;
+    const { anToTokens, myKey } = this.props;
 
-    const calculator = new CoordinateCalculator(3, 3);
-
-    return React.createElement(GridBoardUI, {
+    return React.createElement(BoardUI, {
+      anToTokens,
       calculator,
-      cellClassFunction,
-      cellFunction,
-      tokens,
-      tableClass: "center tc"
+      drawTokenFunction,
+
+      backgroundColor: "White",
+      gridLineWidth: 3,
+      height: 300,
+      isFlat: IS_FLAT,
+      isSquare: IS_SQUARE,
+      myKey,
+      width: 300
     });
   }
 }
 
 TTTBoardUI.propTypes = {
-  tokens: PropTypes.arrayOf(PropTypes.string).isRequired
+  anToTokens: PropTypes.arrayOf(PropTypes.string).isRequired,
+
+  myKey: PropTypes.string
+};
+
+TTTBoardUI.defaultProps = {
+  myKey: "squareBoardCanvas"
 };
 
 export default TTTBoardUI;

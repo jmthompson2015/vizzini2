@@ -1,36 +1,42 @@
 const Token = {
-  KING: "king",
-  PAWN: "pawn",
+  BLACK_KING: "blackKing",
+  BLACK_PAWN: "blackPawn",
+  WHITE_KING: "whiteKing",
+  WHITE_PAWN: "whitePawn",
 
   properties: {
-    king: {
-      blackFen: "K",
-      blackImage: "king-black.png",
-      whiteFen: "k",
-      whiteImage: "king-white.png",
-      key: "king"
+    blackKing: {
+      fen: "K",
+      image: "king-black.png",
+      key: "blackKing"
     },
-    pawn: {
-      blackFen: "P",
-      blackImage: "pawn-black.png",
-      whiteFen: "p",
-      whiteImage: "pawn-white.png",
-      key: "pawn"
+    blackPawn: {
+      fen: "P",
+      image: "pawn-black.png",
+      key: "blackPawn"
+    },
+    whiteKing: {
+      fen: "k",
+      image: "king-white.png",
+      key: "whiteKing"
+    },
+    whitePawn: {
+      fen: "p",
+      image: "pawn-white.png",
+      key: "whitePawn"
     }
   }
 };
 
+Token.keys = () => Object.keys(Token.properties);
+
+Token.values = () => Object.values(Token.properties);
+
 Token.findImageByFenChar = fenChar => {
-  const whiteTokens = R.filter(t => t.whiteFen === fenChar, Object.values(Token.properties));
+  const tokens = R.filter(t => t.fen === fenChar, Token.values());
 
-  if (whiteTokens.length > 0) {
-    return whiteTokens[0].whiteImage;
-  }
-
-  const blackTokens = R.filter(t => t.blackFen === fenChar, Object.values(Token.properties));
-
-  if (blackTokens.length > 0) {
-    return blackTokens[0].blackImage;
+  if (tokens.length > 0) {
+    return tokens[0].image;
   }
 
   return null;

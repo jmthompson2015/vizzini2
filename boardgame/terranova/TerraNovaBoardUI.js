@@ -1,6 +1,8 @@
+import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
-import HexBoardUI from "../HexBoardUI.js";
 
+const IS_SQUARE = false;
+const IS_FLAT = true;
 const DENSE_FOREST = [
   "l4",
   "l5",
@@ -231,14 +233,16 @@ class TerraNovaBoardUI extends React.PureComponent {
 
     const calculator = new CoordinateCalculator(16, 17);
 
-    return React.createElement(HexBoardUI, {
+    return React.createElement(BoardUI, {
       anToTokens,
       calculator,
       drawTokenFunction,
 
       cellColorFunction,
       gridColor: "White",
-      isCellUsedFunction
+      isCellUsedFunction,
+      isFlat: IS_FLAT,
+      isSquare: IS_SQUARE
     });
   }
 }

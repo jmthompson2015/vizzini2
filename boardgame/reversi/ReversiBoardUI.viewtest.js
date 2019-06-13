@@ -1,11 +1,15 @@
 import ReversiBoardUI from "./ReversiBoardUI.js";
+import Token from "./Token.js";
 
-const tokens1 = {
-  d4: "p",
-  e4: "P",
-  d5: "P",
-  e5: "p"
+const BLACK_PAWN = Token.properties[Token.BLACK_PAWN];
+const WHITE_PAWN = Token.properties[Token.WHITE_PAWN];
+
+const anToTokens1 = {
+  d4: WHITE_PAWN,
+  e4: BLACK_PAWN,
+  d5: BLACK_PAWN,
+  e5: WHITE_PAWN
 };
 
-const element1 = React.createElement(ReversiBoardUI, { tokens: tokens1 });
+const element1 = React.createElement(ReversiBoardUI, { anToTokens: anToTokens1 });
 ReactDOM.render(element1, document.getElementById("board"));

@@ -1,36 +1,42 @@
 import CheckerBoardUI from "./CheckerBoardUI.js";
+import Token from "./Token.js";
 
-const tokens1 = {
-  a1: "p",
-  c1: "p",
-  e1: "p",
-  g1: "p",
+const BLACK_KING = Token.properties[Token.BLACK_KING];
+const BLACK_PAWN = Token.properties[Token.BLACK_PAWN];
+const WHITE_KING = Token.properties[Token.WHITE_KING];
+const WHITE_PAWN = Token.properties[Token.WHITE_PAWN];
 
-  b2: "p",
-  d2: "p",
-  f2: "p",
-  h2: "p",
+const anToTokens1 = {
+  a1: WHITE_PAWN,
+  c1: WHITE_PAWN,
+  e1: WHITE_PAWN,
+  g1: WHITE_PAWN,
 
-  a3: "k",
-  c3: "p",
-  e3: "p",
-  g3: "p",
+  b2: WHITE_PAWN,
+  d2: WHITE_PAWN,
+  f2: WHITE_PAWN,
+  h2: WHITE_PAWN,
 
-  b6: "K",
-  d6: "P",
-  f6: "P",
-  h6: "P",
+  a3: WHITE_KING,
+  c3: WHITE_PAWN,
+  e3: WHITE_PAWN,
+  g3: WHITE_PAWN,
 
-  a7: "P",
-  c7: "P",
-  e7: "P",
-  g7: "P",
+  b6: BLACK_KING,
+  d6: BLACK_PAWN,
+  f6: BLACK_PAWN,
+  h6: BLACK_PAWN,
 
-  b8: "P",
-  d8: "P",
-  f8: "P",
-  h8: "P"
+  a7: BLACK_PAWN,
+  c7: BLACK_PAWN,
+  e7: BLACK_PAWN,
+  g7: BLACK_PAWN,
+
+  b8: BLACK_PAWN,
+  d8: BLACK_PAWN,
+  f8: BLACK_PAWN,
+  h8: BLACK_PAWN
 };
 
-const element1 = React.createElement(CheckerBoardUI, { tokens: tokens1 });
+const element1 = React.createElement(CheckerBoardUI, { anToTokens: anToTokens1 });
 ReactDOM.render(element1, document.getElementById("board"));

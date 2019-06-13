@@ -36,10 +36,10 @@ QUnit.test("Token.keys()", assert => {
 
   // Verify.
   assert.ok(result);
-  const length = 16;
+  const length = 18;
   assert.equal(result.length, length);
   assert.equal(result[0], Token.ARCHER);
-  assert.equal(result[length - 1], Token.WARRIOR_PRIEST);
+  assert.equal(result[length - 1], Token.WOLF);
 });
 
 const TokenTest = {};

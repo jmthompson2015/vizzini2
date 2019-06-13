@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["log"] }] */
 
 // see https://www.redblobgames.com/grids/hexagons/
-import HBUtils from "./HexBoardUtilities.js";
+import BoardCalculator from "./BoardCalculator.js";
 
 const loadImage = src =>
   new Promise((resolve, reject) => {
@@ -15,11 +15,18 @@ const loadImage = src =>
   });
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
-class HexBoardUI extends React.PureComponent {
+class BoardUI extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = { size: 1.0, offset: HBUtils.createPoint(), imageMap: {} };
+    const boardCalculator = new BoardCalculator(props.isSquare, props.isFlat);
+
+    this.state = {
+      boardCalculator,
+      imageMap: {},
+      offset: Immutable({ x: 0, y: 0 }),
+      size: 1.0
+    };
   }
 
   componentDidMount() {
@@ -33,25 +40,24 @@ class HexBoardUI extends React.PureComponent {
   }
 
   computeCenter(size, offset, f, r) {
-    const { isFlat } = this.props;
+    const { boardCalculator } = this.state;
 
-    const hex = HBUtils.createHex({ q: f, r });
-    const dim = isFlat ? HBUtils.flatHexDimensions(size) : HBUtils.pointyHexDimensions(size);
-    const myOffset = HBUtils.createPoint({
+    const dim = boardCalculator.cellDimensions(size);
+    const myOffset = Immutable({
       x: dim.w / 2.0 + offset.x,
       y: dim.h / 2.0 + offset.y
     });
 
-    return isFlat
-      ? HBUtils.flatHexToPixel(hex, size, myOffset)
-      : HBUtils.pointyHexToPixel(hex, size, myOffset);
+    return boardCalculator.cellToPixel(f, r, size, myOffset);
   }
 
   computeSize() {
-    const { calculator, gridLineWidth, height, isFlat, isCellUsedFunction, width } = this.props;
+    const { calculator, gridLineWidth, height, isCellUsedFunction, width } = this.props;
+    const { boardCalculator } = this.state;
+    const { cornerCount } = boardCalculator;
 
     const size0 = 1.0;
-    const offset0 = HBUtils.createPoint();
+    const offset0 = Immutable({ x: 0, y: 0 });
     let minX = Number.POSITIVE_INFINITY;
     let minY = Number.POSITIVE_INFINITY;
     let maxX = Number.NEGATIVE_INFINITY;
@@ -64,10 +70,8 @@ class HexBoardUI extends React.PureComponent {
         if (isCellUsedFunction(an)) {
           const center = this.computeCenter(size0, offset0, f - 1, r - 1);
 
-          for (let i = 0; i < 6; i += 1) {
-            const corner = isFlat
-              ? HBUtils.flatHexCorner(center, size0, i)
-              : HBUtils.pointyHexCorner(center, size0, i);
+          for (let i = 0; i < cornerCount; i += 1) {
+            const corner = boardCalculator.cellCorner(center, size0, i);
             minX = Math.min(corner.x, minX);
             minY = Math.min(corner.y, minY);
             maxX = Math.max(corner.x, maxX);
@@ -87,7 +91,7 @@ class HexBoardUI extends React.PureComponent {
       w: (width - size * width0) / 2.0,
       h: (height - size * height0) / 2.0
     };
-    const offset = HBUtils.createPoint({
+    const offset = Immutable({
       x: margin.w - size * minX,
       y: margin.h - size * minY
     });
@@ -102,10 +106,9 @@ class HexBoardUI extends React.PureComponent {
       gridLineWidth,
       cellColorFunction,
       cellImageFunction,
-      isFlat,
       isCellUsedFunction
     } = this.props;
-    const { imageMap, offset, size } = this.state;
+    const { boardCalculator, imageMap, offset, size } = this.state;
 
     for (let r = 1; r <= calculator.rankCount; r += 1) {
       for (let f = 1; f <= calculator.fileCount; f += 1) {
@@ -113,13 +116,13 @@ class HexBoardUI extends React.PureComponent {
 
         if (isCellUsedFunction(an)) {
           const center = this.computeCenter(size, offset, f - 1, r - 1);
-          const corners = HBUtils.computeCorners(center, size, isFlat);
+          const corners = boardCalculator.computeCorners(center, size);
 
           // Layer 0: Cell background color
           const background = cellColorFunction(an);
 
           if (background) {
-            HBUtils.fillHex(context, corners, background);
+            BoardCalculator.fillCell(context, corners, background);
           }
 
           // Layer 1: Cell background image
@@ -129,12 +132,12 @@ class HexBoardUI extends React.PureComponent {
             const img = imageMap[image];
 
             if (img) {
-              HBUtils.drawRectangularImage(context, corners, img);
+              BoardCalculator.drawRectangularImage(context, corners, img);
             }
           }
 
           // Layer 2: Cell outline
-          HBUtils.drawHex(context, corners, gridColor, gridLineWidth);
+          BoardCalculator.drawCell(context, corners, gridColor, gridLineWidth);
         }
       }
     }
@@ -200,7 +203,7 @@ class HexBoardUI extends React.PureComponent {
   }
 }
 
-HexBoardUI.propTypes = {
+BoardUI.propTypes = {
   anToTokens: PropTypes.shape().isRequired,
   calculator: PropTypes.shape().isRequired,
   drawTokenFunction: PropTypes.func.isRequired,
@@ -214,11 +217,12 @@ HexBoardUI.propTypes = {
   images: PropTypes.arrayOf(),
   isCellUsedFunction: PropTypes.func,
   isFlat: PropTypes.bool,
+  isSquare: PropTypes.bool,
   myKey: PropTypes.string,
   width: PropTypes.number
 };
 
-HexBoardUI.defaultProps = {
+BoardUI.defaultProps = {
   backgroundColor: "Gainsboro",
   cellColorFunction: () => undefined,
   cellImageFunction: () => undefined,
@@ -228,8 +232,9 @@ HexBoardUI.defaultProps = {
   images: [],
   isCellUsedFunction: () => true,
   isFlat: true,
+  isSquare: true,
   myKey: "hexBoardCanvas",
   width: 640
 };
 
-export default HexBoardUI;
+export default BoardUI;

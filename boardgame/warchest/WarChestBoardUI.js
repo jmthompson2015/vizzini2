@@ -1,12 +1,13 @@
+import BoardCalculator from "../BoardCalculator.js";
+import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
-import HexBoardUI from "../HexBoardUI.js";
-import HBUtils from "../HexBoardUtilities.js";
 
 import Token from "./Token.js";
 
 const images0 = R.map(R.prop("image"), Token.values());
 const images = ["resource/EmptyControlPoint.png"].concat(images0);
 
+const IS_SQUARE = false;
 const IS_FLAT = true;
 const UNUSED_4P = [
   "a1",
@@ -45,21 +46,23 @@ const UNUSED_2P = HEX_4P.concat(UNUSED_4P);
 const CONTROL_POINTS_2P = ["c6", "d4", "d7", "e2", "e5", "g3", "g6", "h1", "h4", "i2"];
 const CONTROL_POINTS_4P = ["a7", "b5", "j3", "k1"].concat(CONTROL_POINTS_2P);
 
+const boardCalculator = new BoardCalculator(IS_SQUARE, IS_FLAT);
+
 const drawCoin = (context, center, size, an, token, imageMap) => {
-  const corners = HBUtils.computeCorners(center, size, IS_FLAT);
+  const corners = boardCalculator.computeCorners(center, size, IS_FLAT);
   const img = imageMap[token.image];
 
   if (img) {
-    HBUtils.drawCircularImage(context, corners, img);
+    BoardCalculator.drawCircularImage(context, corners, img);
   }
 };
 
 const drawControl = (context, center, size, an, token, imageMap) => {
-  const corners = HBUtils.computeCorners(center, size, IS_FLAT);
+  const corners = boardCalculator.computeCorners(center, size, IS_FLAT);
   const img = imageMap[token.image];
 
   if (img) {
-    HBUtils.drawRectangularImage(context, corners, img);
+    BoardCalculator.drawRectangularImage(context, corners, img);
   }
 };
 
@@ -112,7 +115,7 @@ class WarChestBoardUI extends React.PureComponent {
 
     const calculator = new CoordinateCalculator(11, 7);
 
-    return React.createElement(HexBoardUI, {
+    return React.createElement(BoardUI, {
       anToTokens,
       calculator,
       drawTokenFunction,
@@ -124,6 +127,8 @@ class WarChestBoardUI extends React.PureComponent {
       gridLineWidth: 3,
       images,
       isCellUsedFunction: isCellUsedFunction(isTwoPlayer),
+      isFlat: IS_FLAT,
+      isSquare: IS_SQUARE,
       myKey
     });
   }

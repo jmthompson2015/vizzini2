@@ -8,4 +8,8 @@ open ${BASE}/chess/TestSuite.html
 
 open ${BASE}/reversi/TestSuite.html
 
+open ${BASE}/tictactoe/TestSuite.html
+
+open ${BASE}/warchest/TestSuite.html
+
 open ${BASE}/TestSuite.html

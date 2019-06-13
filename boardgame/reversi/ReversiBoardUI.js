@@ -1,37 +1,61 @@
+import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
-import GridBoardUI from "../GridBoardUI.js";
 
-import Token from "./Token.js";
+const IS_SQUARE = true;
+const IS_FLAT = true;
 
-const NBSP = "\u00A0";
-const NBSP4 = `${NBSP}${NBSP}${NBSP}${NBSP}`;
+const calculator = new CoordinateCalculator(8, 8);
 
-const cellClassFunction = (/* calculator, an, token */) => "ba b--black bw1 f2 pa1 tc v-mid";
+const drawTokenFunction = (context0, center, size, an, token) => {
+  const context = context0;
+  context.save();
 
-const cellFunction = (calculator, an, token) => {
-  const ch = Token.findCharByFenChar(token);
+  let ch = an;
+  context.textAlign = "center";
+  context.textBaseline = "middle";
 
-  return ch || token || NBSP4;
+  if (token) {
+    ch = token.char;
+    context.font = "48px serif";
+    const offset = 5;
+    context.strokeText(ch, center.x, center.y + offset);
+  } else {
+    context.fillStyle = "Black";
+    context.font = "16px serif";
+    context.fillText(ch, center.x, center.y);
+  }
+  context.restore();
 };
+
+const cellColorFunction = () => "Green";
 
 class ReversiBoardUI extends React.PureComponent {
   render() {
-    const { tokens } = this.props;
+    const { anToTokens, myKey } = this.props;
 
-    const calculator = new CoordinateCalculator(8, 8);
-
-    return React.createElement(GridBoardUI, {
-      backgroundColor: "Green",
+    return React.createElement(BoardUI, {
+      anToTokens,
       calculator,
-      cellClassFunction,
-      cellFunction,
-      tokens
+      drawTokenFunction,
+
+      backgroundColor: "White",
+      cellColorFunction,
+      gridLineWidth: 3,
+      isFlat: IS_FLAT,
+      isSquare: IS_SQUARE,
+      myKey
     });
   }
 }
 
 ReversiBoardUI.propTypes = {
-  tokens: PropTypes.arrayOf(PropTypes.string).isRequired
+  anToTokens: PropTypes.arrayOf(PropTypes.string).isRequired,
+
+  myKey: PropTypes.string
+};
+
+ReversiBoardUI.defaultProps = {
+  myKey: "squareBoardCanvas"
 };
 
 export default ReversiBoardUI;

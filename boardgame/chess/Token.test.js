@@ -3,19 +3,19 @@ import Token from "./Token.js";
 QUnit.module("Token");
 
 QUnit.test("findByFenChar", assert => {
-  assert.equal(Token.findByFenChar("K").key, "king");
-  assert.equal(Token.findByFenChar("Q").key, "queen");
-  assert.equal(Token.findByFenChar("R").key, "rook");
-  assert.equal(Token.findByFenChar("B").key, "bishop");
-  assert.equal(Token.findByFenChar("N").key, "knight");
-  assert.equal(Token.findByFenChar("P").key, "pawn");
+  assert.equal(Token.findByFenChar("K").key, "whiteKing");
+  assert.equal(Token.findByFenChar("Q").key, "whiteQueen");
+  assert.equal(Token.findByFenChar("R").key, "whiteRook");
+  assert.equal(Token.findByFenChar("B").key, "whiteBishop");
+  assert.equal(Token.findByFenChar("N").key, "whiteKnight");
+  assert.equal(Token.findByFenChar("P").key, "whitePawn");
 
-  assert.equal(Token.findByFenChar("k").key, "king");
-  assert.equal(Token.findByFenChar("q").key, "queen");
-  assert.equal(Token.findByFenChar("r").key, "rook");
-  assert.equal(Token.findByFenChar("b").key, "bishop");
-  assert.equal(Token.findByFenChar("n").key, "knight");
-  assert.equal(Token.findByFenChar("p").key, "pawn");
+  assert.equal(Token.findByFenChar("k").key, "blackKing");
+  assert.equal(Token.findByFenChar("q").key, "blackQueen");
+  assert.equal(Token.findByFenChar("r").key, "blackRook");
+  assert.equal(Token.findByFenChar("b").key, "blackBishop");
+  assert.equal(Token.findByFenChar("n").key, "blackKnight");
+  assert.equal(Token.findByFenChar("p").key, "blackPawn");
 });
 
 QUnit.test("findCharByFenChar", assert => {

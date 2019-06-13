@@ -1,28 +1,30 @@
 const Token = {
-  PAWN: "pawn",
+  BLACK_PAWN: "blackPawn",
+  WHITE_PAWN: "whitePawn",
 
   properties: {
-    pawn: {
-      blackChar: "\u26AB",
-      blackFen: "P",
-      whiteChar: "\u26AA",
-      whiteFen: "p",
-      key: "pawn"
+    blackPawn: {
+      char: "\u26AB",
+      fen: "P",
+      key: "blackPawn"
+    },
+    whitePawn: {
+      char: "\u26AA",
+      fen: "p",
+      key: "whitePawn"
     }
   }
 };
 
+Token.keys = () => Object.keys(Token.properties);
+
+Token.values = () => Object.values(Token.properties);
+
 Token.findCharByFenChar = fenChar => {
-  const whiteTokens = R.filter(t => t.whiteFen === fenChar, Object.values(Token.properties));
+  const tokens = R.filter(t => t.fen === fenChar, Object.values(Token.properties));
 
-  if (whiteTokens.length > 0) {
-    return whiteTokens[0].whiteChar;
-  }
-
-  const blackTokens = R.filter(t => t.blackFen === fenChar, Object.values(Token.properties));
-
-  if (blackTokens.length > 0) {
-    return blackTokens[0].blackChar;
+  if (tokens.length > 0) {
+    return tokens[0].char;
   }
 
   return null;
