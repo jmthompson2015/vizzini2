@@ -1,10 +1,12 @@
+import BoardCalculator from "../BoardCalculator.js";
 import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
 
 const IS_SQUARE = true;
 const IS_FLAT = true;
 
-const calculator = new CoordinateCalculator(8, 8);
+const boardCalculator = new BoardCalculator(IS_SQUARE, IS_FLAT);
+const coordinateCalculator = new CoordinateCalculator(8, 8);
 
 const drawTokenFunction = (context0, center, size, an, token) => {
   const context = context0;
@@ -35,14 +37,13 @@ class ReversiBoardUI extends React.PureComponent {
 
     return React.createElement(BoardUI, {
       anToTokens,
-      calculator,
+      boardCalculator,
+      coordinateCalculator,
       drawTokenFunction,
 
       backgroundColor: "White",
       cellColorFunction,
       gridLineWidth: 3,
-      isFlat: IS_FLAT,
-      isSquare: IS_SQUARE,
       myKey
     });
   }

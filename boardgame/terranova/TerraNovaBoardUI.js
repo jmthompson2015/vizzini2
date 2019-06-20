@@ -1,3 +1,4 @@
+import BoardCalculator from "../BoardCalculator.js";
 import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
 
@@ -190,6 +191,9 @@ const SWAMP = [
 
 const USED = DENSE_FOREST.concat(FOOTHILLS, LAKE, LIGHT_FOREST, MOUNTAIN, PASTURE, PLAINS, SWAMP);
 
+const boardCalculator = new BoardCalculator(IS_SQUARE, IS_FLAT);
+const coordinateCalculator = new CoordinateCalculator(16, 17);
+
 const drawTokenFunction = (context0, center, size, an, token) => {
   const context = context0;
   context.save();
@@ -231,18 +235,15 @@ class TerraNovaBoardUI extends React.PureComponent {
   render() {
     const { anToTokens } = this.props;
 
-    const calculator = new CoordinateCalculator(16, 17);
-
     return React.createElement(BoardUI, {
       anToTokens,
-      calculator,
+      boardCalculator,
+      coordinateCalculator,
       drawTokenFunction,
 
       cellColorFunction,
       gridColor: "White",
-      isCellUsedFunction,
-      isFlat: IS_FLAT,
-      isSquare: IS_SQUARE
+      isCellUsedFunction
     });
   }
 }

@@ -1,3 +1,4 @@
+import BoardCalculator from "../BoardCalculator.js";
 import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
 
@@ -6,7 +7,8 @@ import Token from "./Token.js";
 const IS_SQUARE = true;
 const IS_FLAT = true;
 
-const calculator = new CoordinateCalculator(3, 3);
+const boardCalculator = new BoardCalculator(IS_SQUARE, IS_FLAT);
+const coordinateCalculator = new CoordinateCalculator(3, 3);
 
 const drawO = (context0, center, size, color) => {
   const radius = 0.25 * size;
@@ -76,14 +78,13 @@ class TTTBoardUI extends React.PureComponent {
 
     return React.createElement(BoardUI, {
       anToTokens,
-      calculator,
+      boardCalculator,
+      coordinateCalculator,
       drawTokenFunction,
 
       backgroundColor: "White",
       gridLineWidth: 3,
       height: 300,
-      isFlat: IS_FLAT,
-      isSquare: IS_SQUARE,
       myKey,
       width: 300
     });

@@ -15,7 +15,7 @@ const bothEven = (a, b) => isEven(a) && isEven(b);
 const bothOdd = (a, b) => isOdd(a) && isOdd(b);
 
 const boardCalculator = new BoardCalculator(IS_SQUARE, IS_FLAT);
-const calculator = new CoordinateCalculator(8, 8);
+const coordinateCalculator = new CoordinateCalculator(8, 8);
 
 const drawTokenFunction = (context, center, size, an, token, imageMap) => {
   if (token) {
@@ -29,8 +29,8 @@ const drawTokenFunction = (context, center, size, an, token, imageMap) => {
 };
 
 const cellColorFunction = an => {
-  const file = calculator.anToFile(an);
-  const rank = calculator.anToRank(an);
+  const file = coordinateCalculator.anToFile(an);
+  const rank = coordinateCalculator.anToRank(an);
 
   return bothEven(file, rank) || bothOdd(file, rank) ? "hsl(0,0%,20%)" : "Red";
 };
@@ -41,7 +41,8 @@ class CheckerBoardUI extends React.PureComponent {
 
     return React.createElement(BoardUI, {
       anToTokens,
-      calculator,
+      boardCalculator,
+      coordinateCalculator,
       drawTokenFunction,
 
       backgroundColor: "White",
@@ -49,8 +50,6 @@ class CheckerBoardUI extends React.PureComponent {
       gridColor: "Yellow",
       gridLineWidth: 3,
       images,
-      isFlat: IS_FLAT,
-      isSquare: IS_SQUARE,
       myKey
     });
   }

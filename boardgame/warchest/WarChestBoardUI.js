@@ -47,6 +47,7 @@ const CONTROL_POINTS_2P = ["c6", "d4", "d7", "e2", "e5", "g3", "g6", "h1", "h4",
 const CONTROL_POINTS_4P = ["a7", "b5", "j3", "k1"].concat(CONTROL_POINTS_2P);
 
 const boardCalculator = new BoardCalculator(IS_SQUARE, IS_FLAT);
+const coordinateCalculator = new CoordinateCalculator(11, 7);
 
 const drawCoin = (context, center, size, an, token, imageMap) => {
   const corners = boardCalculator.computeCorners(center, size, IS_FLAT);
@@ -113,11 +114,10 @@ class WarChestBoardUI extends React.PureComponent {
   render() {
     const { anToTokens, isTwoPlayer, myKey } = this.props;
 
-    const calculator = new CoordinateCalculator(11, 7);
-
     return React.createElement(BoardUI, {
       anToTokens,
-      calculator,
+      boardCalculator,
+      coordinateCalculator,
       drawTokenFunction,
 
       backgroundColor: "hsl(40,30%,75%)",
@@ -127,8 +127,6 @@ class WarChestBoardUI extends React.PureComponent {
       gridLineWidth: 3,
       images,
       isCellUsedFunction: isCellUsedFunction(isTwoPlayer),
-      isFlat: IS_FLAT,
-      isSquare: IS_SQUARE,
       myKey
     });
   }

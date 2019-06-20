@@ -1,3 +1,4 @@
+import BoardCalculator from "../BoardCalculator.js";
 import BoardUI from "../BoardUI.js";
 import CoordinateCalculator from "../CoordinateCalculator.js";
 
@@ -10,7 +11,8 @@ const isUpperCase = value => value && value.toUpperCase() === value;
 const bothEven = (a, b) => isEven(a) && isEven(b);
 const bothOdd = (a, b) => isOdd(a) && isOdd(b);
 
-const calculator = new CoordinateCalculator(8, 8);
+const boardCalculator = new BoardCalculator(IS_SQUARE, IS_FLAT);
+const coordinateCalculator = new CoordinateCalculator(8, 8);
 
 const drawTokenFunction = (context0, center, size, an, token) => {
   const context = context0;
@@ -35,8 +37,8 @@ const drawTokenFunction = (context0, center, size, an, token) => {
 };
 
 const cellColorFunction = an => {
-  const file = calculator.anToFile(an);
-  const rank = calculator.anToRank(an);
+  const file = coordinateCalculator.anToFile(an);
+  const rank = coordinateCalculator.anToRank(an);
 
   return bothEven(file, rank) || bothOdd(file, rank) ? "Green" : "LightGray";
 };
@@ -47,14 +49,13 @@ class ChessBoardUI extends React.PureComponent {
 
     return React.createElement(BoardUI, {
       anToTokens,
-      calculator,
+      boardCalculator,
+      coordinateCalculator,
       drawTokenFunction,
 
       backgroundColor: "White",
       cellColorFunction,
       gridLineWidth: 3,
-      isFlat: IS_FLAT,
-      isSquare: IS_SQUARE,
       myKey
     });
   }

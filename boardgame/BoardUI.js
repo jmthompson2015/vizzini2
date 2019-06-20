@@ -19,10 +19,7 @@ class BoardUI extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const boardCalculator = new BoardCalculator(props.isSquare, props.isFlat);
-
     this.state = {
-      boardCalculator,
       imageMap: {},
       offset: Immutable({ x: 0, y: 0 }),
       size: 1.0
@@ -40,7 +37,7 @@ class BoardUI extends React.PureComponent {
   }
 
   computeCenter(size, offset, f, r) {
-    const { boardCalculator } = this.state;
+    const { boardCalculator } = this.props;
 
     const dim = boardCalculator.cellDimensions(size);
     const myOffset = Immutable({
@@ -52,8 +49,14 @@ class BoardUI extends React.PureComponent {
   }
 
   computeSize() {
-    const { calculator, gridLineWidth, height, isCellUsedFunction, width } = this.props;
-    const { boardCalculator } = this.state;
+    const {
+      boardCalculator,
+      coordinateCalculator,
+      gridLineWidth,
+      height,
+      isCellUsedFunction,
+      width
+    } = this.props;
     const { cornerCount } = boardCalculator;
 
     const size0 = 1.0;
@@ -63,9 +66,9 @@ class BoardUI extends React.PureComponent {
     let maxX = Number.NEGATIVE_INFINITY;
     let maxY = Number.NEGATIVE_INFINITY;
 
-    for (let r = 1; r <= calculator.rankCount; r += 1) {
-      for (let f = 1; f <= calculator.fileCount; f += 1) {
-        const an = calculator.fileRankToAN(f, r);
+    for (let r = 1; r <= coordinateCalculator.rankCount; r += 1) {
+      for (let f = 1; f <= coordinateCalculator.fileCount; f += 1) {
+        const an = coordinateCalculator.fileRankToAN(f, r);
 
         if (isCellUsedFunction(an)) {
           const center = this.computeCenter(size0, offset0, f - 1, r - 1);
@@ -101,18 +104,19 @@ class BoardUI extends React.PureComponent {
 
   drawCells(context) {
     const {
-      calculator,
+      boardCalculator,
+      coordinateCalculator,
       gridColor,
       gridLineWidth,
       cellColorFunction,
       cellImageFunction,
       isCellUsedFunction
     } = this.props;
-    const { boardCalculator, imageMap, offset, size } = this.state;
+    const { imageMap, offset, size } = this.state;
 
-    for (let r = 1; r <= calculator.rankCount; r += 1) {
-      for (let f = 1; f <= calculator.fileCount; f += 1) {
-        const an = calculator.fileRankToAN(f, r);
+    for (let r = 1; r <= coordinateCalculator.rankCount; r += 1) {
+      for (let f = 1; f <= coordinateCalculator.fileCount; f += 1) {
+        const an = coordinateCalculator.fileRankToAN(f, r);
 
         if (isCellUsedFunction(an)) {
           const center = this.computeCenter(size, offset, f - 1, r - 1);
@@ -144,13 +148,13 @@ class BoardUI extends React.PureComponent {
   }
 
   drawTokens(context) {
-    const { calculator, drawTokenFunction, isCellUsedFunction, anToTokens } = this.props;
+    const { coordinateCalculator, drawTokenFunction, isCellUsedFunction, anToTokens } = this.props;
     const { imageMap, offset, size } = this.state;
     context.save();
 
-    for (let r = 1; r <= calculator.rankCount; r += 1) {
-      for (let f = 1; f <= calculator.fileCount; f += 1) {
-        const an = calculator.fileRankToAN(f, r);
+    for (let r = 1; r <= coordinateCalculator.rankCount; r += 1) {
+      for (let f = 1; f <= coordinateCalculator.fileCount; f += 1) {
+        const an = coordinateCalculator.fileRankToAN(f, r);
 
         if (isCellUsedFunction(an)) {
           const token = anToTokens[an];
@@ -205,7 +209,8 @@ class BoardUI extends React.PureComponent {
 
 BoardUI.propTypes = {
   anToTokens: PropTypes.shape().isRequired,
-  calculator: PropTypes.shape().isRequired,
+  boardCalculator: PropTypes.shape().isRequired,
+  coordinateCalculator: PropTypes.shape().isRequired,
   drawTokenFunction: PropTypes.func.isRequired,
 
   backgroundColor: PropTypes.string,
@@ -216,8 +221,6 @@ BoardUI.propTypes = {
   height: PropTypes.number,
   images: PropTypes.arrayOf(),
   isCellUsedFunction: PropTypes.func,
-  isFlat: PropTypes.bool,
-  isSquare: PropTypes.bool,
   myKey: PropTypes.string,
   width: PropTypes.number
 };
@@ -231,8 +234,6 @@ BoardUI.defaultProps = {
   height: 480,
   images: [],
   isCellUsedFunction: () => true,
-  isFlat: true,
-  isSquare: true,
   myKey: "hexBoardCanvas",
   width: 640
 };
