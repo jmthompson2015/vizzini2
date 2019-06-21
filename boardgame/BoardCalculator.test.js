@@ -300,5 +300,28 @@ QUnit.test("computeCorners() square pointy", assert => {
   assert.equal(round4(cornerLast.y), 0);
 });
 
+QUnit.test("BoardCalculator.isPointInPolygon()", assert => {
+  // Setup.
+  const point1 = Immutable({ x: 5, y: 5 });
+  const point2 = Immutable({ x: 15, y: 5 });
+  const point3 = Immutable({ x: 5, y: 15 });
+  const corners1 = [{ x: 0, y: 0 }, { x: 0, y: 10 }, { x: 10, y: 10 }, { x: 10, y: 0 }];
+  const corners2 = [{ x: 10, y: 0 }, { x: 10, y: 10 }, { x: 20, y: 10 }, { x: 20, y: 0 }];
+  const corners3 = [{ x: 0, y: 10 }, { x: 0, y: 20 }, { x: 10, y: 20 }, { x: 10, y: 10 }];
+
+  // Run / Verify.
+  assert.equal(BoardCalculator.isPointInPolygon(point1.x, point1.y, corners1), true);
+  assert.equal(BoardCalculator.isPointInPolygon(point2.x, point2.y, corners1), false);
+  assert.equal(BoardCalculator.isPointInPolygon(point3.x, point3.y, corners1), false);
+
+  assert.equal(BoardCalculator.isPointInPolygon(point1.x, point1.y, corners2), false);
+  assert.equal(BoardCalculator.isPointInPolygon(point2.x, point2.y, corners2), true);
+  assert.equal(BoardCalculator.isPointInPolygon(point3.x, point3.y, corners2), false);
+
+  assert.equal(BoardCalculator.isPointInPolygon(point1.x, point1.y, corners3), false);
+  assert.equal(BoardCalculator.isPointInPolygon(point2.x, point2.y, corners3), false);
+  assert.equal(BoardCalculator.isPointInPolygon(point3.x, point3.y, corners3), true);
+});
+
 const BoardCalculatorTest = {};
 export default BoardCalculatorTest;

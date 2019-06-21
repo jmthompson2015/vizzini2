@@ -4,6 +4,7 @@
 const HexBoardUtilities = {};
 
 const DEG_TO_RAD = Math.PI / 180.0;
+const SQRT3 = Math.sqrt(3.0);
 
 HexBoardUtilities.createCube = ({ x = 0, y = 0, z = 0 } = {}) => Immutable({ x, y, z });
 
@@ -121,7 +122,7 @@ HexBoardUtilities.flatHexCorner = (center, size, i) => {
 };
 
 HexBoardUtilities.flatHexDimensions = size =>
-  HexBoardUtilities.createDimension({ w: 2.0 * size, h: Math.sqrt(3.0) * size });
+  HexBoardUtilities.createDimension({ w: 2.0 * size, h: SQRT3 * size });
 
 HexBoardUtilities.flatHexSpacing = size => {
   const dim = HexBoardUtilities.flatHexDimensions(size);
@@ -130,7 +131,7 @@ HexBoardUtilities.flatHexSpacing = size => {
 
 HexBoardUtilities.flatHexToPixel = (hex, size, offset = { x: 0, y: 0 }) => {
   const x = size * ((3 / 2) * hex.q);
-  const y = size * ((Math.sqrt(3) / 2) * hex.q + Math.sqrt(3) * hex.r);
+  const y = size * ((SQRT3 / 2) * hex.q + SQRT3 * hex.r);
   return HexBoardUtilities.createPoint({ x: x + offset.x, y: y + offset.y });
 };
 
@@ -155,14 +156,15 @@ HexBoardUtilities.hexNeighbor = (hex, direction) => {
 };
 
 HexBoardUtilities.pixelToPointyHex = (point, size) => {
-  const q = ((Math.sqrt(3) / 3) * point.x - (1 / 3) * point.y) / size;
+  // 2 * sin(60 deg) = sqrt(3)
+  const q = ((SQRT3 / 3) * point.x - (1 / 3) * point.y) / size;
   const r = ((2 / 3) * point.y) / size;
   return hexRound(HexBoardUtilities.createHex({ q, r }));
 };
 
 HexBoardUtilities.pixelToFlatHex = (point, size) => {
   const q = ((2 / 3) * point.x) / size;
-  const r = ((-1 / 3) * point.x + (Math.sqrt(3) / 3) * point.y) / size;
+  const r = ((-1 / 3) * point.x + (SQRT3 / 3) * point.y) / size;
   return hexRound(HexBoardUtilities.createHex({ q, r }));
 };
 
@@ -176,7 +178,7 @@ HexBoardUtilities.pointyHexCorner = (center, size, i) => {
 };
 
 HexBoardUtilities.pointyHexDimensions = size =>
-  HexBoardUtilities.createDimension({ w: Math.sqrt(3.0) * size, h: 2 * size });
+  HexBoardUtilities.createDimension({ w: SQRT3 * size, h: 2 * size });
 
 HexBoardUtilities.pointyHexSpacing = size => {
   const dim = HexBoardUtilities.pointyHexDimensions(size);
@@ -184,7 +186,7 @@ HexBoardUtilities.pointyHexSpacing = size => {
 };
 
 HexBoardUtilities.pointyHexToPixel = (hex, size, offset = { x: 0, y: 0 }) => {
-  const x = size * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r);
+  const x = size * (SQRT3 * hex.q + (SQRT3 / 2) * hex.r);
   const y = size * ((3 / 2) * hex.r);
   return HexBoardUtilities.createPoint({ x: x + offset.x, y: y + offset.y });
 };

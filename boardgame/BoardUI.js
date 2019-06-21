@@ -24,6 +24,8 @@ class BoardUI extends React.PureComponent {
       offset: Immutable({ x: 0, y: 0 }),
       size: 1.0
     };
+
+    this.handleOnClick = this.handleOnClickFunction.bind(this);
   }
 
   componentDidMount() {
@@ -167,6 +169,37 @@ class BoardUI extends React.PureComponent {
     context.restore();
   }
 
+  handleOnClickFunction(event) {
+    const { boardCalculator, coordinateCalculator, isCellUsedFunction, onClick } = this.props;
+    const { offset, size } = this.state;
+
+    const canvas = event.currentTarget;
+    const clientRect = canvas.getBoundingClientRect();
+    const point = Immutable({
+      x: Math.round(event.clientX - clientRect.left),
+      y: Math.round(event.clientY - clientRect.top)
+    });
+
+    let answer = null;
+
+    for (let r = 1; !answer && r <= coordinateCalculator.rankCount; r += 1) {
+      for (let f = 1; !answer && f <= coordinateCalculator.fileCount; f += 1) {
+        const an = coordinateCalculator.fileRankToAN(f, r);
+
+        if (isCellUsedFunction(an)) {
+          const center = this.computeCenter(size, offset, f - 1, r - 1);
+          const corners = boardCalculator.computeCorners(center, size);
+
+          if (BoardCalculator.isPointInPolygon(point.x, point.y, corners)) {
+            answer = an;
+          }
+        }
+      }
+    }
+
+    onClick(answer);
+  }
+
   loadImages() {
     const { images } = this.props;
 
@@ -200,6 +233,7 @@ class BoardUI extends React.PureComponent {
     return ReactDOMFactories.canvas({
       id: myKey,
       key: myKey,
+      onClick: this.handleOnClick,
       style: { backgroundColor },
       width,
       height
@@ -222,6 +256,7 @@ BoardUI.propTypes = {
   images: PropTypes.arrayOf(),
   isCellUsedFunction: PropTypes.func,
   myKey: PropTypes.string,
+  onClick: PropTypes.func,
   width: PropTypes.number
 };
 
@@ -235,6 +270,7 @@ BoardUI.defaultProps = {
   images: [],
   isCellUsedFunction: () => true,
   myKey: "hexBoardCanvas",
+  onClick: () => {},
   width: 640
 };
 

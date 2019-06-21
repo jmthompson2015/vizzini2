@@ -4,6 +4,82 @@ const DEG_TO_RAD = Math.PI / 180.0;
 const COS45 = Math.cos(45.0 * DEG_TO_RAD);
 const SQRT3 = Math.sqrt(3.0);
 
+const pointsFromPath = path => {
+  const answer = [];
+
+  for (let i = 0; i < path.length; i += 1) {
+    const point = path[i];
+    answer.push(point.x);
+    answer.push(point.y);
+  }
+
+  // Close path.
+  const point = path[0];
+  answer.push(point.x);
+  answer.push(point.y);
+
+  return answer;
+};
+
+/*
+ * Tests if a point is Left|On|Right of an infinite line.
+ *
+ * Input: three points P0, P1, and P2
+ *
+ * Return:
+ *
+ * >0 for P2 left of the line through P0 and P1
+ *
+ * =0 for P2 on the line
+ *
+ * <0 for P2 right of the line
+ *
+ * See: Algorithm 1 <a href="http://geomalgorithms.com/a01-_area.html">"Area of Triangles and Polygons"</a>
+ */
+const isLeft = (x0, y0, x1, y1, x2, y2) => (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0);
+
+/*
+ * winding number test for a point in a polygon
+ *
+ * Input: P = a point,
+ *
+ * V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+ *
+ * Return: wn = the winding number (=0 only when P is outside)
+ */
+const determineWindingNumber = (x, y, polygon) => {
+  let wn = 0; // the winding number counter
+  const points = pointsFromPath(polygon);
+  const n = points.length - 2;
+
+  // loop through all edges of the polygon
+  for (let i = 0; i < n; i += 2) {
+    // edge from V[i] to V[i+1]
+    if (points[i + 1] <= y) {
+      // start y <= P.y
+      if (points[i + 3] > y) {
+        // an upward crossing
+        if (isLeft(points[i], points[i + 1], points[i + 2], points[i + 3], x, y) > 0) {
+          // P
+          // left of edge
+          wn += 1; // have a valid up intersect
+        }
+      }
+    }
+    // start y > P.y (no test needed)
+    else if (points[i + 3] <= y) {
+      // a downward crossing
+      if (isLeft(points[i], points[i + 1], points[i + 2], points[i + 3], x, y) < 0) {
+        // P
+        // right of edge
+        wn -= 1; // have a valid down intersect
+      }
+    }
+  }
+
+  return wn;
+};
+
 class BoardCalculator {
   constructor(isSquare = true, isFlat = true) {
     this._isSquare = isSquare;
@@ -162,6 +238,12 @@ BoardCalculator.fillCell = (context0, corners, background) => {
   context.fillStyle = background;
   context.fill();
   context.restore();
+};
+
+BoardCalculator.isPointInPolygon = (x, y, polygon) => {
+  const wn = determineWindingNumber(x, y, polygon);
+
+  return wn % 2 !== 0;
 };
 
 export default BoardCalculator;

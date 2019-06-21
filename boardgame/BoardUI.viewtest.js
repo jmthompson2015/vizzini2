@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["log"] }] */
+
 import BoardCalculator from "./BoardCalculator.js";
 import BoardUI from "./BoardUI.js";
 import CoordinateCalculator from "./CoordinateCalculator.js";
@@ -10,6 +12,10 @@ const drawTokenFunction = (context0, center, an, token) => {
   context.font = "24px serif";
   context.fillText(token || an, center.x, center.y);
   context.restore();
+};
+
+const myOnClick = an => {
+  console.log(`myOnClick() an = ${an}`);
 };
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +36,7 @@ const element1 = React.createElement(BoardUI, {
   drawTokenFunction,
 
   myKey: "hexPanel1",
+  onClick: myOnClick,
   height: 4 * size,
   width: 3 * size
 });
@@ -55,6 +62,7 @@ const element2 = React.createElement(BoardUI, {
   gridColor: "Maroon",
   gridLineWidth: 5,
   myKey: "hexPanel2",
+  onClick: myOnClick,
   height: 3 * size,
   width: 4 * size
 });
@@ -77,6 +85,7 @@ const element3 = React.createElement(BoardUI, {
   drawTokenFunction,
 
   myKey: "hexPanel3",
+  onClick: myOnClick,
   height: 4 * size,
   width: 3 * size
 });
@@ -102,6 +111,7 @@ const element4 = React.createElement(BoardUI, {
   gridColor: "Maroon",
   gridLineWidth: 5,
   myKey: "hexPanel4",
+  onClick: myOnClick,
   height: 3 * size,
   width: 4 * size
 });
